@@ -8,6 +8,7 @@ from config import SYNC_DB_URL
 from alembic import context
 from database.connect import Base
 
+from database.models.user import User
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
