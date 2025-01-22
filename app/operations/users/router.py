@@ -57,8 +57,9 @@ async def create_user(user: UserRegister, session: AsyncSession = Depends(get_db
     
     return new_user
 
-@router.patch("")
-
+@router.patch("/edit_by_id")
+async def edit_user():
+    pass
 
     
         
