@@ -1,4 +1,5 @@
 from database.connect import  Base, engine
+from database.models.user import User
 
 
 async def create_database():
