@@ -8,13 +8,22 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from database.connect import get_db
 from database.creater import create_database
 
+from app.utils.redis import RedisClient
+
 
 app = FastAPI()
+
+redis_client = RedisClient()
 
 @app.get("/check_db")
 async def check_db(session: AsyncSession = Depends(get_db)):
     result = await session.execute(text("SELECT 1"))
     return {"status": "connected" if result.scalar() == 1 else "disconnected"}
+
+@app.get("/test_redis")
+async def test_redis():
+    redis_client.set_key("test_key", "test_value")
+    return redis_client.get_key("test_key")
 
 
 async def main():
