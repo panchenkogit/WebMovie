@@ -2,16 +2,17 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import NonNegativeInt
 
+from app.utils.jwt import check_access_token
 from database.connect import get_db
 
-from app.entities.user.schema import User, UserLogin, UserRegister
+from app.entities.user.schema import User, UserLogin, UserRegister, UserUpdate
 from database.models.user import User as UserDB
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
 from app.utils.hash_password import hash_password, check_password
-from app.utils.dependencies import verify_user
+from app.utils.verification import verify_user
 
 
 router = APIRouter(prefix="/users",
@@ -38,28 +39,11 @@ async def get_user_by_id(id: int, session: AsyncSession = Depends(get_db)) -> Us
     return result
 
 
-@router.post("/create", response_model=User)
-async def create_user(user: UserRegister, session: AsyncSession = Depends(get_db)) -> User:
-    await verify_user(user.username, session)
-
-    hash_pass = hash_password(user.password).decode()
-
-    new_user = UserDB(
-        username=user.username,
-        hash_password=hash_pass,
-        age=user.age,
-        email=user.email
-    )
-
-    session.add(new_user)
-    await session.commit()
-    await session.refresh(new_user)
-    
-    return new_user
-
 @router.patch("/edit_by_id")
-async def edit_user():
-    pass
+async def edit_user(user_update: UserUpdate,
+                    current_user: dict = Depends(check_access_token),
+                    session: AsyncSession = Depends(get_db)) -> User:
+    
 
     
         
