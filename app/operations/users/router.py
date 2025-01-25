@@ -9,7 +9,7 @@ from app.entities.user.schema import User, UserLogin, UserRegister, UserUpdate
 from database.models.user import User as UserDB
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, update
 
 from app.utils.hash_password import hash_password, check_password
 from app.utils.verification import verify_user
@@ -21,6 +21,7 @@ router = APIRouter(prefix="/users",
 
 @router.get("/all", response_model=List[User])
 async def get_all_users(session: AsyncSession = Depends(get_db)) -> List[User]:
+
     query = await session.execute(select(UserDB))
     result = query.scalars().all()
     if not result:
@@ -30,7 +31,9 @@ async def get_all_users(session: AsyncSession = Depends(get_db)) -> List[User]:
 
 
 @router.get("/{id}", response_model=User)
-async def get_user_by_id(id: int, session: AsyncSession = Depends(get_db)) -> User:
+async def get_user_by_id(id: int,
+                         session: AsyncSession = Depends(get_db)) -> User:
+    
     query = await session.execute(select(UserDB).where(UserDB.id == id))
     result = query.scalar_one_or_none()
     if result is None:
@@ -39,11 +42,32 @@ async def get_user_by_id(id: int, session: AsyncSession = Depends(get_db)) -> Us
     return result
 
 
-@router.patch("/edit_by_id")
-async def edit_user(user_update: UserUpdate,
-                    current_user: dict = Depends(check_access_token),
-                    session: AsyncSession = Depends(get_db)) -> User:
-    
 
+@router.patch("/edit_user")
+async def edit_user(
+    user_update: UserUpdate,
+    current_user: dict = Depends(check_access_token),
+    session: AsyncSession = Depends(get_db)
+) -> User:
+    await verify_user(user_update.username, session=session, is_reg=True)
+
+    if user_update.password:
+        user_update.password = hash_password(user_update.password)
+        setattr(user_update, 'hash_password', user_update.password)
+        delattr(user_update, 'password')
+
+    user = await session.get(UserDB, current_user["id"])
+    if not user:
+        raise HTTPException(status_code=404, detail="Пользователь не найден")
+
+    update_data = user_update.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(user, key, value)
+
+    await session.commit()
+    await session.refresh(user)
     
+    return user
+
+
         
