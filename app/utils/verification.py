@@ -18,6 +18,7 @@ async def verify_user(username: str, session: AsyncSession = Depends(get_db), is
         if result:
             raise HTTPException(status_code=400,
                             detail="User already exists!")
+        return
         
 
     if not is_reg and result is None:

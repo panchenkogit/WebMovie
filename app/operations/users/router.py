@@ -1,7 +1,8 @@
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from pydantic import NonNegativeInt
 
+from app.utils.cookies import create_tokens, generate_payload, set_token_in_cookie
 from app.utils.jwt import check_access_token
 from database.connect import get_db
 
@@ -24,9 +25,7 @@ async def get_all_users(session: AsyncSession = Depends(get_db)) -> List[User]:
 
     query = await session.execute(select(UserDB))
     result = query.scalars().all()
-    if not result:
-        raise HTTPException(status_code=404,
-                            detail="Not found!")
+
     return result
 
 
@@ -46,19 +45,21 @@ async def get_user_by_id(id: int,
 @router.patch("/edit_user")
 async def edit_user(
     user_update: UserUpdate,
+    response: Response,
     current_user: dict = Depends(check_access_token),
     session: AsyncSession = Depends(get_db)
 ) -> User:
-    await verify_user(user_update.username, session=session, is_reg=True)
+
+    if user_update.username and user_update.username != current_user["username"]:
+        await verify_user(user_update.username, session=session, is_reg=True)
 
     if user_update.password:
         user_update.password = hash_password(user_update.password)
-        setattr(user_update, 'hash_password', user_update.password)
-        delattr(user_update, 'password')
 
     user = await session.get(UserDB, current_user["id"])
     if not user:
         raise HTTPException(status_code=404, detail="Пользователь не найден")
+
 
     update_data = user_update.model_dump(exclude_unset=True)
     for key, value in update_data.items():
@@ -66,6 +67,12 @@ async def edit_user(
 
     await session.commit()
     await session.refresh(user)
+    
+
+    payload = generate_payload(user=user)
+    if payload != current_user:
+        tokens = create_tokens(payload=payload)
+        set_token_in_cookie(response, tokens)
     
     return user
 

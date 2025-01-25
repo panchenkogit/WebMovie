@@ -9,6 +9,9 @@ from alembic import context
 from database.connect import Base
 
 from database.models.user import User
+from database.models.director import Director
+from database.models.film import Film
+
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
