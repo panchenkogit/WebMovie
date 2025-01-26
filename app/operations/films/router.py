@@ -8,7 +8,7 @@ from database.connect import get_db
 
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, exists
 
 
 
@@ -85,3 +85,19 @@ async def delete_film(id: int,
     await session.commit()
 
     return Response(status_code=204)
+
+
+@router.post("/add_film_in_library")
+async def add_film_in_library(id: int,
+                              session: AsyncSession = Depends(get_db),
+                              current_user: dict = Depends(check_access_token)):
+    
+    query = await session.execute(select(exists(FilmDB)).where(FilmDB.id == id))
+    film = query.scalar_one_or_none()
+
+    if not film:
+        raise HTTPException(status_code=404, detail="Film not found!")
+    
+    pass
+    
+    

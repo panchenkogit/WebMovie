@@ -1,18 +1,25 @@
+from sqlalchemy import Column, Integer, ForeignKey, DateTime, func
+from sqlalchemy.orm import relationship
 from database.connect import Base
 
-from sqlalchemy import Column, Table, ForeignKey
+
+class UserFilmLibrary(Base):
+    __tablename__ = "user_film_library"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    film_id = Column(Integer, ForeignKey("films.id", ondelete="CASCADE"), nullable=False)
+    created_at = Column(DateTime, default=func.now(), nullable=False)
+
+    user = relationship("User", back_populates="liked_films")
+    film = relationship("Film", back_populates="liked_by_users")
 
 
-films_directors = Table(
-    "film_director",
-    Base.metadata,
-    Column('film_id', ForeignKey('films.id', ondelete="CASCADE"), primary_key=True, index=True),
-    Column('director_id', ForeignKey('directors.id', ondelete="CASCADE"), primary_key=True, index=True),
-)
+class FilmDirector(Base):
+    __tablename__ = "film_director"
 
-films_users = Table(
-    "user_film_library",
-    Base.metadata,
-    Column('users_id', ForeignKey('users.id', ondelete="CASCADE"), primary_key=True, index=True),
-    Column('films_id', ForeignKey('films.id', ondelete="CASCADE"), primary_key=True, index=True),
-)
+    id = Column(Integer, primary_key=True, index=True)
+    film_id = Column(Integer, ForeignKey("films.id", ondelete="CASCADE"), nullable=False)
+    director_id = Column(Integer, ForeignKey("directors.id", ondelete="CASCADE"), nullable=False)
+
+
