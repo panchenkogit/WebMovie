@@ -9,7 +9,9 @@ from database.connect import get_db
 from database.creater import create_database
 
 from app.operations.users.router import router as UsersRouter
-from app.utils.authorization import router as Authrouter
+from app.utils.authorization import router as AuthRouter
+from app.operations.films.router import router as FilmsRouter
+from app.operations.directors.router import router as DirectorsRouter
 
 from app.utils.redis import RedisClient
 
@@ -18,8 +20,11 @@ from app.utils.redis import RedisClient
 app = FastAPI(title="WebMovie",
               version="1.0.0")
 
+app.include_router(AuthRouter)
 app.include_router(UsersRouter)
-app.include_router(Authrouter)
+app.include_router(FilmsRouter)
+app.include_router(DirectorsRouter)
+
 
 redis_client = RedisClient()
 

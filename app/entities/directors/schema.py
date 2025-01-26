@@ -5,24 +5,14 @@ from datetime import date
 
 class DirectorBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=100, description="Имя режиссёра")
-    birthday: Optional[date] = Field(
-        None, 
-        description="Дата рождения режиссёра в формате YYYY-MM-DD"
-    )
+    birthday: Optional[date] = Field(None, description="Дата рождения режиссёра в формате YYYY-MM-DD")
 
 class DirectorCreate(DirectorBase):
     pass
 
 class DirectorUpdate(BaseModel):
-    name: Optional[str] = Field(
-        None, 
-        min_length=1, 
-        max_length=100, 
-        description="Имя режиссёра"
-    )
-    birthday: Optional[date] = Field(
-        None, 
-        description="Дата рождения режиссёра в формате YYYY-MM-DD"
+    name: Optional[str] = Field(None, min_length=1, max_length=100, description="Имя режиссёра")
+    birthday: Optional[date] = Field(None, description="Дата рождения режиссёра в формате YYYY-MM-DD"
     )
 
 class Director(DirectorBase):

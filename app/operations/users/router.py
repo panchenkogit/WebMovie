@@ -43,12 +43,10 @@ async def get_user_by_id(id: int,
 
 
 @router.patch("/edit_user")
-async def edit_user(
-    user_update: UserUpdate,
-    response: Response,
-    current_user: dict = Depends(check_access_token),
-    session: AsyncSession = Depends(get_db)
-) -> User:
+async def edit_user(user_update: UserUpdate,
+                    response: Response,
+                    current_user: dict = Depends(check_access_token),
+                    session: AsyncSession = Depends(get_db)) -> User:
 
     if user_update.username and user_update.username != current_user["username"]:
         await verify_user(user_update.username, session=session, is_reg=True)
