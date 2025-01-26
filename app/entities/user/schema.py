@@ -1,6 +1,8 @@
 from pydantic import Field, BaseModel, EmailStr, NonNegativeInt, model_validator
 from typing import Optional
 
+
+
 class UserBase(BaseModel):
     username: str = Field(..., min_length=2, max_length=30, description="Имя пользователя от 2 до 30 символов")
     email: EmailStr = Field(..., min_length=6, max_length=30, description="Почта в формате @email")
