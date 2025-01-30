@@ -44,7 +44,7 @@ async def reg_user(
 ):
     await verify_user(user.username, session=session, is_reg=True)
 
-    hash_pass = hash_password(user.password).decode()
+    hash_pass = hash_password(user.password)
 
     new_user = UserDB(
         username=user.username,
