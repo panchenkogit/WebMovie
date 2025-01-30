@@ -12,6 +12,7 @@ from app.operations.users.router import router as UsersRouter
 from app.utils.authorization import router as AuthRouter
 from app.operations.films.router import router as FilmsRouter
 from app.operations.directors.router import router as DirectorsRouter
+from app.operations.recommendations.router import router as RecRouter
 
 from app.utils.redis import RedisClient
 
@@ -24,6 +25,7 @@ app.include_router(AuthRouter)
 app.include_router(UsersRouter)
 app.include_router(FilmsRouter)
 app.include_router(DirectorsRouter)
+app.include_router(RecRouter)
 
 
 redis_client = RedisClient()

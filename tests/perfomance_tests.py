@@ -32,7 +32,7 @@ class PerformanceTester:
         end_time = time()
         return {"db_read_time": round((end_time - start_time), 2)}
 
-    def test_redis_write(self, iterations: int = 1000000) -> Dict[str, float]:
+    def test_redis_write(self, iterations: int = 1000) -> Dict[str, float]:
         """Тест записи данных в Redis."""
         start_time = time()
         for i in range(iterations):
@@ -40,7 +40,7 @@ class PerformanceTester:
         end_time = time()
         return {"redis_write_time": round((end_time - start_time), 2)}
 
-    def test_redis_read(self, iterations: int = 1000000) -> Dict[str, float]:
+    def test_redis_read(self, iterations: int = 1000) -> Dict[str, float]:
         """Тест чтения данных из Redis."""
         start_time = time()
         keys  = [f"key_{i}" for i in range(iterations)]
