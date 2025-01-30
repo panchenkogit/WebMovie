@@ -11,8 +11,8 @@ class UserFilmLibrary(Base):
     user_rating = Column(Float, nullable=True)
     created_at = Column(DateTime, default=func.now(), nullable=False)
 
-    user = relationship("User", back_populates="liked_films", lazy="joined")
-    film = relationship("Film", back_populates="liked_by_users", lazy="joined")
+    user = relationship("User", back_populates="liked_films")
+    film = relationship("Film", back_populates="liked_by_users")
 
 class FilmDirector(Base):
     __tablename__ = "film_director"
@@ -20,6 +20,13 @@ class FilmDirector(Base):
     id = Column(Integer, primary_key=True, index=True)
     film_id = Column(Integer, ForeignKey("films.id", ondelete="CASCADE"), nullable=False)
     director_id = Column(Integer, ForeignKey("directors.id", ondelete="CASCADE"), nullable=False)
+
+
+class FilmGenre(Base):
+    __tablename__ = "film_genre"
+
+    film_id = Column(Integer, ForeignKey("films.id", ondelete="CASCADE"), primary_key=True)
+    genre_id = Column(Integer, ForeignKey("genres.id", ondelete="CASCADE"), primary_key=True)
 
 
 class FilmGenre(Base):
