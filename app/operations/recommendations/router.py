@@ -6,12 +6,29 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.utils.jwt import check_access_token
 
+from database.models import Film as FilmDB
 from database.connect import get_db
 from database.models.relationships import UserFilmLibrary
+from ml_model.als_recommender import load_model
 
 
 router = APIRouter(prefix='/recomend',
                    tags=['recommendations'])
+
+
+@router.get("/recommendations/{user_id}")
+async def get_recommendations(session: AsyncSession = Depends(get_db),
+                              current_user: dict = Depends(check_access_token)):
+    model = load_model()
+
+    result = await session.execute(select(FilmDB.id))
+    film_ids = result.scalars().all()
+
+    predictions = [(film_id, model.predict(current_user["id"], film_id).est) for film_id in film_ids]
+    predictions.sort(key=lambda x: x[1], reverse=True)
+    top_films = [film_id for film_id, _ in predictions[:10]]
+    
+    return {"user_id": current_user["id"], "recommended_films": top_films}
 
 
 async def get_user_film_rating(user_id: int,
