@@ -9,7 +9,7 @@ from database.connect import get_db
 from database.creater import create_database
 
 from app.operations.users.router import router as UsersRouter
-from app.utils.authorization import router as AuthRouter
+from app.utils.auth.authorization import router as AuthRouter
 from app.operations.films.router import router as FilmsRouter
 from app.operations.directors.router import router as DirectorsRouter
 from app.operations.recommendations.router import router as RecRouter

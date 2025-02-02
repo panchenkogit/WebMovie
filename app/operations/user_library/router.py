@@ -4,7 +4,7 @@ from database.models.film import Film as FilmDB
 from database.models.relationships import UserFilmLibrary
 from database.connect import get_db
 
-from app.utils.jwt import check_access_token
+from app.utils.jwt.jwt import check_access_token
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import and_, select, exists

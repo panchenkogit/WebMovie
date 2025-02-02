@@ -2,8 +2,8 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, Response
 from pydantic import NonNegativeInt
 
-from app.utils.cookies import create_tokens, generate_payload, set_token_in_cookie
-from app.utils.jwt import check_access_token
+from app.utils.jwt.cookies import create_tokens, generate_payload, set_token_in_cookie
+from app.utils.jwt.jwt import check_access_token
 from database.connect import get_db
 
 from app.entities.user.schema import User, UserLogin, UserRegister, UserUpdate
@@ -12,8 +12,8 @@ from database.models.user import User as UserDB
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update
 
-from app.utils.hash_password import hash_password, check_password
-from app.utils.verification import verify_user
+from app.utils.auth.hash_password import hash_password, check_password
+from app.utils.auth.verification import verify_user
 
 
 router = APIRouter(prefix="/users",

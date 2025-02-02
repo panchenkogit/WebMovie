@@ -4,7 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.utils.jwt import check_access_token
+from app.utils.jwt.jwt import check_access_token
 
 from database.models import Film as FilmDB
 from database.connect import get_db

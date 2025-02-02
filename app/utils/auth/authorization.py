@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.utils.cookies import generate_payload,create_tokens, set_token_in_cookie
-from app.utils.jwt import check_token, create_access_token, create_refresh_token
-from app.utils.hash_password import hash_password, check_password
-from app.utils.verification import verify_user
+from app.utils.jwt.cookies import generate_payload,create_tokens, set_token_in_cookie
+from app.utils.jwt.jwt import check_token, create_access_token, create_refresh_token
+from app.utils.auth.hash_password import hash_password, check_password
+from app.utils.auth.verification import verify_user
 
 from database.connect import get_db
 from database.models.user import User as UserDB

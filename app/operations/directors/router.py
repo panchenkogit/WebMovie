@@ -2,7 +2,7 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, Response
 
 from app.entities.directors.schema import Director, DirectorUpdate
-from app.utils.jwt import check_access_token
+from app.utils.jwt.jwt import check_access_token
 from database.connect import get_db
 
 from database.models.director import Director as DirectorDB

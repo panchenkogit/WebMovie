@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, Response
 
 from app.entities.film.schema import Film, FilmUpdate
 from database.models.film import Film as FilmDB
-from app.utils.jwt import check_access_token
+from app.utils.jwt.jwt import check_access_token
 from database.connect import get_db
 
 

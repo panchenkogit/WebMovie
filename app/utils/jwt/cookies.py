@@ -1,6 +1,6 @@
 from fastapi import Response
 
-from app.utils.jwt import create_access_token, create_refresh_token
+from app.utils.jwt.jwt import create_access_token, create_refresh_token
 
 from database.models.user import User as UserDB
 
