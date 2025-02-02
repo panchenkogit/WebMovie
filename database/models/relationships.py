@@ -29,10 +29,3 @@ class FilmGenre(Base):
     genre_id = Column(Integer, ForeignKey("genres.id", ondelete="CASCADE"), primary_key=True)
 
 
-class FilmGenre(Base):
-    __tablename__ = "film_genre"
-
-    film_id = Column(Integer, ForeignKey("films.id", ondelete="CASCADE"), primary_key=True)
-    genre_id = Column(Integer, ForeignKey("genres.id", ondelete="CASCADE"), primary_key=True)
-
-
