@@ -39,8 +39,8 @@ async def check_db(session: AsyncSession = Depends(get_db)):
 
 @app.get("/test_redis")
 async def test_redis():
-    redis_client.set_key("test_key", "test_value")
-    return redis_client.get_key("test_key")
+    await redis_client.set_key("test_key", "test_value")
+    return await redis_client.get_key("test_key")
 
 
 
