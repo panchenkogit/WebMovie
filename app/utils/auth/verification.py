@@ -12,7 +12,7 @@ from sqlalchemy import select
 
 async def verify_user(username: str, session: AsyncSession = Depends(get_db), is_reg: bool = False) -> UserDB:
     query = await session.execute(select(UserDB).where(UserDB.username == username))
-    result = query.scalar_one_or_none()
+    result = query.unique().scalar_one_or_none()
 
     if is_reg:
         if result:
