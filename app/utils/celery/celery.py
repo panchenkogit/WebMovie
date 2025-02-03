@@ -1,7 +1,9 @@
 from celery import Celery
 from celery.schedules import crontab
+from config import REDIS_URL
 
-celery = Celery("webmovie_tasks", broker="redis://localhost:6379/0", backend="redis://localhost:6379/0")
+
+celery = Celery("webmovie_tasks", broker=REDIS_URL, backend=REDIS_URL)
 
 celery.conf.update(timezone="UTC")
 
