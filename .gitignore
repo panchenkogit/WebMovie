@@ -49,3 +49,7 @@ htmlcov/
 # Git
 *.orig
 *.rej
+.env
+docker-compose.override.yml
+*.log
+__pycache__/

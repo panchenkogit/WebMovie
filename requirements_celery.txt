@@ -1,0 +1,4 @@
+-r requirements.txt
+celery
+celery[redis]
+celery-beat

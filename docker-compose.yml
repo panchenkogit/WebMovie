@@ -1,0 +1,84 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: fastapi_app
+    env_file:
+      - .env.docker  # Используем только .env.docker для Docker
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - app_network
+    volumes:
+      - .:/app  # Монтируем локальную директорию в контейнер
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload  # Автоматическая перезагрузка при изменениях
+
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile.celery
+    container_name: celery
+    env_file:
+      - .env.docker  # Используем только .env.docker для Docker
+    depends_on:
+      - redis
+    networks:
+      - app_network
+    volumes:
+      - .:/app  # Монтируем локальную директорию в контейнер
+    command: celery -A app.utils.celery.celery worker --loglevel=info --pool=solo
+
+  celery-beat:
+    build:
+      context: .
+      dockerfile: Dockerfile.celery_beat
+    container_name: celery_beat
+    env_file:
+      - .env.docker  # Используем только .env.docker для Docker
+    depends_on:
+      - redis
+      - celery
+    networks:
+      - app_network
+    volumes:
+      - .:/app  # Монтируем локальную директорию в контейнер
+    command: celery -A app.utils.celery.celery beat --loglevel=info
+
+  postgres:
+    image: postgres:13
+    container_name: postgres
+    env_file: 
+      - .env.docker  # Используем только .env.docker для Docker
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    networks:
+      - app_network
+
+  redis:
+    image: redis:6.2
+    container_name: redis
+    env_file:
+      - .env.docker  # Используем только .env.docker для Docker
+    ports:
+      - "6379:6379"
+    networks:
+      - app_network
+
+volumes:
+  postgres_data:
+
+networks:
+  app_network:
+    driver: bridge
