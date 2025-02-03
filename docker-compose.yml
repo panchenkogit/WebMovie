@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile.backend
     container_name: fastapi_app
     env_file:
-      - .env.docker  # Используем только .env.docker для Docker
+      - .env.docker
     ports:
       - "8000:8000"
     depends_on:
@@ -16,22 +16,21 @@ services:
     networks:
       - app_network
     volumes:
-      - .:/app  # Монтируем локальную директорию в контейнер
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload  # Автоматическая перезагрузка при изменениях
-
+      - .:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
   celery:
     build:
       context: .
       dockerfile: Dockerfile.celery
     container_name: celery
     env_file:
-      - .env.docker  # Используем только .env.docker для Docker
+      - .env.docker
     depends_on:
       - redis
     networks:
       - app_network
     volumes:
-      - .:/app  # Монтируем локальную директорию в контейнер
+      - .:/app
     command: celery -A app.utils.celery.celery worker --loglevel=info --pool=solo
 
   celery-beat:
@@ -40,21 +39,21 @@ services:
       dockerfile: Dockerfile.celery_beat
     container_name: celery_beat
     env_file:
-      - .env.docker  # Используем только .env.docker для Docker
+      - .env.docker
     depends_on:
       - redis
       - celery
     networks:
       - app_network
     volumes:
-      - .:/app  # Монтируем локальную директорию в контейнер
+      - .:/app
     command: celery -A app.utils.celery.celery beat --loglevel=info
 
   postgres:
     image: postgres:13
     container_name: postgres
     env_file: 
-      - .env.docker  # Используем только .env.docker для Docker
+      - .env.docker
     ports:
       - "5432:5432"
     volumes:
@@ -70,7 +69,7 @@ services:
     image: redis:6.2
     container_name: redis
     env_file:
-      - .env.docker  # Используем только .env.docker для Docker
+      - .env.docker
     ports:
       - "6379:6379"
     networks:
