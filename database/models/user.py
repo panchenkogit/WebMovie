@@ -15,4 +15,4 @@ class User(Base):
     hash_password = Column(String, nullable=False)
     email = Column(String(50), index=True, unique=True)
 
-    liked_films = relationship("UserFilmLibrary", back_populates="user", lazy="joined")
+    liked_films = relationship("UserFilmLibrary", back_populates="user")

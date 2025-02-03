@@ -23,13 +23,15 @@ router = APIRouter(prefix="/users",
 @router.get("/all", response_model=List[User])
 async def get_all_users(page: int = 1,
                         per_page: int = 20,
-                        session: AsyncSession = Depends(get_db)) -> List[User]:
+                        session: AsyncSession = Depends(get_db)):
     offset = (page - 1) * per_page
 
-    query = await session.execute(select(UserDB).limit(per_page).offset(offset))
+    query = select(UserDB).limit(per_page).offset(offset)
     
-    result = query.scalars().all()
-    return result
+    result = await session.execute(query)
+    users = result.scalars().all()
+    
+    return users
 
 
 
